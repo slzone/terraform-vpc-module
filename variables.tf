@@ -8,10 +8,51 @@ variable "region" {
   type        = string
 }
 
+variable "prefix" {
+  description = "The prefix that you would like to append to your resources"
+  type        = string
+  default     = null
+}
+
 variable "vpc_name" {
   description = "The resource group ID where the VPC to be created"
   type        = string
-  default     = "The name of the VPC"
+}
+
+variable "classic_access" {
+  description = "Classic Access to the VPC"
+  type        = bool
+  default     = null
+}
+
+variable "default_address_prefix" {
+  description = "Default address prefix creation method"
+  type        = string
+  default     = null
+}
+
+variable "default_network_acl_name" {
+  description = "Name of the Default ACL"
+  type        = string
+  default     = null
+}
+
+variable "default_security_group_name" {
+  description = "Name of the Default Security Group"
+  type        = string
+  default     = null
+}
+
+variable "default_routing_table_name" {
+  description = "Name of the Default Routing Table"
+  type        = string
+  default     = null
+}
+
+variable "vpc_tags" {
+  description = "List of Tags for the vpc"
+  type        = list(string)
+  default     = []
 }
 
 variable "security_groups" {

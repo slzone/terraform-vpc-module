@@ -10,9 +10,14 @@ data "ibm_resource_group" "group" {
 # Create new VPC
 #---------------------------------------------------------
 resource "ibm_is_vpc" "vpc" {
-  name                = var.vpc_name
-  resource_group      = data.ibm_resource_group.group.id
-  tags                = ["replacement"]
+  name                        = (var.prefix != null ? "${var.prefix}-${var.vpc_name}" : var.vpc_name)
+  resource_group              = data.ibm_resource_group.group.id
+  classic_access              = (var.classic_access != null ? var.classic_access : false)
+  address_prefix_management   = (var.default_address_prefix != null ? var.default_address_prefix : "manual")
+  default_network_acl_name    = (var.default_network_acl_name != null ? var.default_network_acl_name : null)
+  default_security_group_name = (var.default_security_group_name != null ? var.default_security_group_name : null)
+  default_routing_table_name  = (var.default_routing_table_name != null ? var.default_routing_table_name : null)
+  tags                        = (var.vpc_tags != null ? var.vpc_tags : [])
 }
 
 #---------------------------------------------------------
@@ -20,6 +25,7 @@ resource "ibm_is_vpc" "vpc" {
 #---------------------------------------------------------
 resource "ibm_is_vpc_address_prefix" "address_prefixes" {
   for_each = var.address_prefixes
+
   name =  each.key
   vpc  = ibm_is_vpc.vpc.id
   zone = "${var.region}-${each.value["zone_number"]}"
@@ -30,7 +36,7 @@ resource "ibm_is_vpc_address_prefix" "address_prefixes" {
 # Network resources
 ##########################################################
 locals {
-  security_group_list = distinct(flatten([
+  security_group_to_create = distinct(flatten([
     [for k, v in var.security_groups : [k] if k != "default" ]
   ]))
 
@@ -52,7 +58,8 @@ locals {
 # Create security group resources
 #---------------------------------------------------------
 resource ibm_is_security_group "vpc_sg" {
-  for_each = toset(local.security_group_list)
+  for_each = toset(local.security_group_to_create)
+
   name = each.key
   vpc = ibm_is_vpc.vpc.id
   resource_group = data.ibm_resource_group.group.id
@@ -63,6 +70,7 @@ resource ibm_is_security_group "vpc_sg" {
 #---------------------------------------------------------
 resource "ibm_is_security_group_rule" "sg_rules" {
   for_each  = local.security_group_rules
+
   group     = each.value.sg_name == "default" ? ibm_is_vpc.vpc.default_security_group : ibm_is_security_group.vpc_sg[each.value["sg_name"]].id
   direction = each.value["direction"]
   remote    = length(regexall("[:\\.]", each.value["remote"])) > 0 ? each.value["remote"] : ibm_is_security_group.vpc_sg[each.value["remote"]].id
@@ -95,6 +103,7 @@ resource "ibm_is_security_group_rule" "sg_rules" {
 #---------------------------------------------------------
 resource "ibm_is_network_acl" "acls" {
   for_each  = var.acls
+  
   name      = each.key
   vpc       = ibm_is_vpc.vpc.id
   dynamic "rules" {
