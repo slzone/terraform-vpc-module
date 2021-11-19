@@ -103,6 +103,12 @@ variable "cloud_init_data" {
   default = {}
 }
 
+variable "encryption_key_crn" {
+  description = "kms key crn"
+  type = string
+  default = null
+}
+
 variable "servers" {
   description = "A list of server that you wish to define within your VPC"
   type = list

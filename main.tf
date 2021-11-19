@@ -103,7 +103,7 @@ resource "ibm_is_security_group_rule" "sg_rules" {
 #---------------------------------------------------------
 resource "ibm_is_network_acl" "acls" {
   for_each  = var.acls
-  
+
   name      = each.key
   vpc       = ibm_is_vpc.vpc.id
   dynamic "rules" {
@@ -269,7 +269,8 @@ resource "ibm_is_volume" "volumes" {
   profile = each.value["profile"]
   zone = each.value["zone"]
   capacity = each.value["capacity"]
-  tags = ["replacement"]
+  encryption_key = (var.encryption_key_crn != null ? var.encryption_key_crn : null)
+  tags = []
 }
 
 data "ibm_is_images" "images" {}
@@ -299,6 +300,10 @@ resource "ibm_is_instance" "server-instances" {
       subnet = ibm_is_subnet.subnets[network_interfaces.value["subnet"]].id
       security_groups = length(lookup(each.value, "security_groups", [])) == 0 ? [ibm_is_vpc.vpc.default_security_group] : [for sg in network_interfaces.value["security_groups"] : sg == "default" ? ibm_is_vpc.vpc.default_security_group : ibm_is_security_group.vpc_sg[sg].id]
     }
+  }
+
+  boot_volume {
+    encryption = (var.encryption_key_crn != null ? var.encryption_key_crn : null)
   }
 
   user_data = lookup(each.value, "user_data", "") != "" ? data.template_cloudinit_config.cloud-init[each.value["user_data"]].rendered : null
