@@ -151,7 +151,7 @@ resource "ibm_is_public_gateway" "public_gateway" {
   name = "${var.vpc_name}-${each.key}-pubgw"
   vpc  = ibm_is_vpc.vpc.id
   zone = each.key
-  tags = ["replacement"]
+  tags = []
   timeouts {
      create = "60m"
      delete = "60m"
@@ -227,7 +227,7 @@ locals {
 locals {
    ssh_keys_to_upload = {
      for sshkey in var.ssh_keys :
-       sshkey.name => {public_key: sshkey.public_key, resource_group: lookup(sshkey, "resource_group", ""), tags: lookup(sshkey, "tags", "")}
+       sshkey.name => {public_key: sshkey.public_key, resource_group: lookup(sshkey, "resource_group", ""), tags: lookup(sshkey, "tags", [])}
        if lookup(sshkey,"public_key", "") != ""
    }
    ssh_keys = [ for sshkey in var.ssh_keys : sshkey.name ]
@@ -238,7 +238,7 @@ resource "ibm_is_ssh_key" "sshkeys_to_upload" {
   name           = each.key
   public_key     = each.value["public_key"]
   resource_group = data.ibm_resource_group.group.id
-  tags           = split(",", each.value["tags"])
+  tags           = each.value["tags"]
 }
 
 data "ibm_is_ssh_key" "sshkey" {
