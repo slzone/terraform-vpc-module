@@ -349,8 +349,9 @@ resource "ibm_is_vpn_gateway" "vpn_gw" {
   for_each = var.vpn_gateway
   name   = each.key
   subnet = ibm_is_subnet.subnets[each.value["subnet"]].id
+  mode = lookup(each.value, "mode", "route")
   resource_group = data.ibm_resource_group.group.id
-  tags = ["replacement"]
+  tags = lookup(each.value, "tags", [])
 }
 
 #---------------------------------------------------------
