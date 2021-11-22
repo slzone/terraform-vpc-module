@@ -2,21 +2,22 @@
 
 These types of resources are supported:
 
-* [VPC](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_vpc.html)
-* [Address Prefixes](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_vpc_address_prefix.html)
-* [Subnet](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_subnet.html)
-* [Security Groups](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_security_group.html)
-* [Security Group Rules](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_security_group_rule.html)
-* [ACLs](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_network_acl.html)
-* [Instances](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_instance.html)
-* [Public Gateway](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_public_gateway.html)
-* [VPN Gateway](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_vpn_gateway.html)
-* [VPN Gateway Connection](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_vpn_gateway_connection.html)
-* [Volumes](https://ibm-cloud.github.io/tf-ibm-docs/v1.2.3/r/is_volume.html)
-* [Load Balancer](https://cloud.ibm.com/docs/terraform?topic=terraform-vpc-gen2-resources#lb)
-* [Load Balancer Listener](https://cloud.ibm.com/docs/terraform?topic=terraform-vpc-gen2-resources#lb-listener)
-* [Load Balancer Pool](https://cloud.ibm.com/docs/terraform?topic=terraform-vpc-gen2-resources#lb-pool)
-* [Load Balancer Pool Member](https://cloud.ibm.com/docs/terraform?topic=terraform-vpc-gen2-resources#lb-pool-member)
+* [VPC](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc)
+* [Address Prefixes](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc_address_prefix)
+* [Subnet](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_subnet)
+* [Security Groups](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_security_group)
+* [Security Group Rules](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_security_group_rule)
+* [ACLs](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_network_acl)
+* [ACL Rules](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_network_acl_rule)
+* [Instances](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_instance)
+* [Public Gateway](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_public_gateway)
+* [VPN Gateway](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpn_gateway)
+* [VPN Gateway Connection](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpn_gateway_connection)
+* [Volumes](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_volume)
+* [Load Balancer](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb)
+* [Load Balancer Listener](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener)
+* [Load Balancer Pool](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool)
+* [Load Balancer Pool Member](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool_member)
 
 ## Terraform versions
 
