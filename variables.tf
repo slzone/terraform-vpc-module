@@ -1,4 +1,4 @@
-variable "resource_group" {
+variable "resource_group_id" {
   description = "The resource group ID where the VPC to be created"
   type        = string
 }

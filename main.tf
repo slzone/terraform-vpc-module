@@ -1,17 +1,9 @@
 #---------------------------------------------------------
-# Get resource_group id
-#---------------------------------------------------------
-
-data "ibm_resource_group" "group" {
-  name = var.resource_group
-}
-
-#---------------------------------------------------------
 # Create new VPC
 #---------------------------------------------------------
 resource "ibm_is_vpc" "vpc" {
   name                        = (var.prefix != null ? "${var.prefix}-${var.vpc_name}" : var.vpc_name)
-  resource_group              = data.ibm_resource_group.group.id
+  resource_group              = var.resource_group_id
   classic_access              = (var.classic_access != null ? var.classic_access : false)
   address_prefix_management   = (var.default_address_prefix != null ? var.default_address_prefix : "manual")
   default_network_acl_name    = (var.default_network_acl_name != null ? var.default_network_acl_name : null)
@@ -62,7 +54,7 @@ resource ibm_is_security_group "vpc_sg" {
 
   name = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   vpc = ibm_is_vpc.vpc.id
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
 }
 
 #---------------------------------------------------------
@@ -175,7 +167,7 @@ resource "ibm_is_subnet" "subnets" {
     delete = "30m"
   }
 
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
 
   depends_on = [ibm_is_vpc_address_prefix.address_prefixes]
 }
@@ -237,7 +229,7 @@ resource "ibm_is_ssh_key" "sshkeys_to_upload" {
   for_each       = local.ssh_keys_to_upload
   name           = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   public_key     = each.value["public_key"]
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
   tags           = each.value["tags"]
 }
 
@@ -273,7 +265,7 @@ resource "ibm_is_volume" "volumes" {
   tags = []
 }
 
-data "ibm_is_images" "images" {}
+#data "ibm_is_images" "images" {}
 
 #---------------------------------------------------------
 # Create instances
@@ -283,7 +275,8 @@ resource "ibm_is_instance" "server-instances" {
   name      = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   zone      = ibm_is_subnet.subnets[each.value["subnet"]].zone
   profile   = each.value["profile"]
-  image     = data.ibm_is_images.images.images[index(data.ibm_is_images.images.images.*.name, each.value.image)].id
+  #image     = data.ibm_is_images.images.images[index(data.ibm_is_images.images.images.*.name, each.value.image)].id
+  image     = each.value.image_id
   vpc       = ibm_is_vpc.vpc.id
   keys      = [for key in lookup(each.value, "ssh_key_list", []) : data.ibm_is_ssh_key.sshkey[key].id]
   volumes   = [for v in lookup(each.value, "volumes", []) : ibm_is_volume.volumes["${v.prefix}-${each.value["serverIndex"]}"].id]
@@ -308,10 +301,10 @@ resource "ibm_is_instance" "server-instances" {
 
   user_data = lookup(each.value, "user_data", "") != "" ? data.template_cloudinit_config.cloud-init[each.value["user_data"]].rendered : null
 
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
   tags = lookup(each.value, "tags", [])
 
-  depends_on = [data.ibm_is_images.images]
+  #depends_on = [data.ibm_is_images.images]
 }
 
 #---------------------------------------------------------
@@ -350,7 +343,7 @@ resource "ibm_is_vpn_gateway" "vpn_gw" {
   name   = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   subnet = ibm_is_subnet.subnets[each.value["subnet"]].id
   mode = lookup(each.value, "mode", "route")
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
   tags = lookup(each.value, "tags", [])
 }
 
@@ -434,7 +427,7 @@ resource "ibm_is_lb" "lbs" {
   name     = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   subnets  = [ for subnet in each.value["subnets"] : ibm_is_subnet.subnets[subnet].id ]
   type     = lookup(each.value, "type", "public")
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
   tags           = lookup(each.value, "tags", "") != "" ? split(",", lookup(each.value, "tags", "")): []
 }
 
@@ -500,17 +493,14 @@ resource "ibm_is_lb_listener_policy" "lb_listener_policy" {
 ##########################################################
 # Virtual Endpoint Gateway
 ##########################################################
-data "ibm_is_endpoint_gateway_targets" "endpointGatewayTargets" {}
-
-
-
+# If endpoint_crn is set to "" then it will default to ibm-ntp-server
 resource "ibm_is_virtual_endpoint_gateway" "endpoint_gateways" {
   for_each = var.endpoint_gateways
   name = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   target {
-    name          = each.value.endpoint == "ibm-ntp-server" ? "ibm-ntp-server" : null
-    resource_type = each.value.endpoint == "ibm-ntp-server" ? "provider_infrastructure_service" : "provider_cloud_service"
-    crn           = data.ibm_is_endpoint_gateway_targets.endpointGatewayTargets.resources[index(data.ibm_is_endpoint_gateway_targets.endpointGatewayTargets.resources.*.resource_type, each.value.endpoint)].crn
+    name          = each.value.endpoint_crn == "" ? "ibm-ntp-server" : null
+    resource_type = each.value.endpoint_crn == "" ? "provider_infrastructure_service" : "provider_cloud_service"
+    crn           = each.value.endpoint_crn
   }
   dynamic "ips" {
     for_each = toset(lookup(each.value, "subnets", []))
@@ -520,5 +510,5 @@ resource "ibm_is_virtual_endpoint_gateway" "endpoint_gateways" {
     }
   }
   vpc = ibm_is_vpc.vpc.id
-  resource_group = data.ibm_resource_group.group.id
+  resource_group = var.resource_group_id
 }
