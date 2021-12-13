@@ -403,6 +403,9 @@ Argument Reference:
 * \<name\>: Name of the load balancer that you want to define
   * subnets: List of names of the subnet this load balancer is associated with
   * type: (Optional) the type of the load balancer.  Default value is public.  Supported values are public and private
+  * profile: (Optional, string) default is Application LB.  Set to network-fixed for Network LB
+  * route_mode: (Optional, bool) Indicates whether route mode is enabled for this load balancer
+  * security_groups: (Optional, List) A list of security groups to use for this load balancer. This option is supported only for application load balancers.
   * tags: (Optional, string with each name separated by a comma) tags associated with the load balancer
   * pools: (list of maps that provides a load balancer pool)
     * name - (Required, string) The name of the pool
@@ -418,7 +421,8 @@ Argument Reference:
     * session_persistence_cookie_name - (Optional, string) Session persistence cookie name. This option is applicable only to –session-persistence-type
     * members: (list of maps) Provides a load balancer pool member resource
       * port - (Required, int) The port number of the application running in the server member.
-      * target_address - (Required, string) The IP address of the pool member.
+      * address - (Required, string) The IP address of the pool member.  This is required for Application Load Balancers
+      * target - (Required, string) The name of the Instance you want to add as a pool member.  This is required for Network Load Balancers
       * weight - (Optional, int) Weight of the server member. This option takes effect only when the load balancing algorithm of its belonging pool is weighted_round_robin
     * listeners: (list of maps) Provides a load balancer listener resource
       * port - (Required, int) The listener port number. Valid range 1 to 65535.

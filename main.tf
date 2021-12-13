@@ -367,7 +367,7 @@ resource "ibm_is_vpn_gateway_connection" "vpn_gateway_connection" {
 locals {
   lbpool_list = flatten([
     for lb_k, lb_v in var.loadbalancers : [
-      for pool in lb_v["pools"] : [
+      for pool in lookup(lb_v, "pools", []) : [
         merge(pool, {lb_name: lb_k})
       ]
     ]
@@ -380,9 +380,9 @@ locals {
 
   lbpool_members_list = flatten([
     for lb_k, lb_v in var.loadbalancers : [
-      for pool in lb_v["pools"] : [
-        for member in pool["members"] : [
-          merge(member, {lb_name: lb_k, lb_pool: pool["name"]})
+      for pool in lookup(lb_v, "pools", []) : [
+        for member in lookup(pool, "members", []) : [
+          merge(member, {lb_name: lb_k, lb_pool: pool["name"], lb_profile: lookup(lb_v, "profile", null)})
         ]
       ]
     ]
@@ -390,12 +390,12 @@ locals {
 
   lbpool_members = {
     for member in local.lbpool_members_list :
-      member.address => member
+      lookup(member, "address", null) != null ? member.address : member.target  => member
   }
 
   lblistener_list = flatten([
     for lb_k, lb_v in var.loadbalancers : [
-      for listener in lb_v["listeners"] : [
+      for listener in lookup(lb_v, "listeners", []) : [
         merge(listener, {lb_name: lb_k})
       ]
     ]
@@ -408,7 +408,7 @@ locals {
 
   lblistener_policy_list = flatten([
     for lb_k, lb_v in var.loadbalancers : [
-      for listener in lb_v["listeners"] : [
+      for listener in lookup(lb_v, "listeners", []) : [
         for policy in listener["policies"] : [
           merge(policy, {lb_name: lb_k, listener_name: listener["port"]})
         ]
@@ -423,12 +423,15 @@ locals {
 }
 
 resource "ibm_is_lb" "lbs" {
-  for_each = var.loadbalancers
-  name     = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
-  subnets  = [ for subnet in each.value["subnets"] : ibm_is_subnet.subnets[subnet].id ]
-  type     = lookup(each.value, "type", "public")
-  resource_group = var.resource_group_id
-  tags           = lookup(each.value, "tags", "") != "" ? split(",", lookup(each.value, "tags", "")): []
+  for_each        = var.loadbalancers
+  name            = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
+  subnets         = [ for subnet in each.value["subnets"] : ibm_is_subnet.subnets[subnet].id ]
+  type            = lookup(each.value, "type", "public")
+  resource_group  = var.resource_group_id
+  profile         = lookup(each.value, "profile", null)
+  route_mode      = lookup(each.value, "route_mode", null)
+  security_groups = lookup(each.value, "security_groups", null) == null ? null : [for sg in each.value["security_groups"] : sg == "default" ? ibm_is_vpc.vpc.default_security_group : ibm_is_security_group.vpc_sg[sg].id]  
+  tags            = lookup(each.value, "tags", "") != "" ? split(",", lookup(each.value, "tags", "")): []
 }
 
 resource "ibm_is_lb_pool" "lb_pools" {
@@ -437,6 +440,7 @@ resource "ibm_is_lb_pool" "lb_pools" {
   lb             = ibm_is_lb.lbs[each.value["lb_name"]].id
   algorithm      = each.value["algorithm"]
   protocol       = each.value["protocol"]
+  proxy_protocol = lookup(each.value, "proxy_protocol", null)
   health_delay   = each.value["health_delay"]
   health_retries = each.value["health_retries"]
   health_timeout = each.value["health_timeout"]
@@ -453,7 +457,8 @@ resource "ibm_is_lb_pool_member" "lb_members" {
   lb             = ibm_is_lb.lbs[each.value["lb_name"]].id
   pool           = ibm_is_lb_pool.lb_pools[each.value["lb_pool"]].id
   port           = each.value["port"]
-  target_address = each.value["address"]
+  target_address = lookup(each.value, "address", null)
+  target_id      = lookup(each.value, "target", null) != null ? ibm_is_instance.server-instances[each.value.target].id : null
   weight         = lookup(each.value, "weight", null)
 }
 
