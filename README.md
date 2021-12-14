@@ -180,7 +180,7 @@ Argument Reference:
 ```hcl
 address_prefixes = {
      zone1-cidr-1 = {
-       zone_name = "us-south-1"
+       zone_number = "1"
        cidr = "172.21.0.0/21"
      }
   }
@@ -188,7 +188,7 @@ address_prefixes = {
 
 Argument Reference:
 * name: The name you want to define for this address prefix
-  * zone_name: The name of the zone
+  * zone_number: The zone number that you want to associate this address prefix to (1, 2, or 3)
   * cidr: The CIDR block for the address
 
 ### security_group_rules
@@ -283,10 +283,10 @@ Argument Reference:
 ### subnets
 ```hcl
 subnets = {
-    <name> = {
+    mgmt-subnet = {
       zone_number = "1"
       cidr_block = "172.21.0.0/24"
-      network_acl = "<ACL NAME>
+      network_acl = "base-acl"
       public_gateway = "us-south-1"
     }
   }
@@ -306,7 +306,7 @@ public_gateway = ["us-south-1"]
 ```
 
 Argument Reference:
-* \<name\>: The name that you want to define for the public gateway.  Value gateway zone name
+* \<name\>: The zone name that you wish to associate this public gateway to.
 
 ### servers
 
