@@ -1,27 +1,76 @@
 # IBM VPC Terraform module
 
-These types of resources are supported:
+## Requirements
 
-* [VPC](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc)
-* [Address Prefixes](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc_address_prefix)
-* [Subnet](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_subnet)
-* [Security Groups](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_security_group)
-* [Security Group Rules](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_security_group_rule)
-* [ACLs](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_network_acl)
-* [ACL Rules](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_network_acl_rule)
-* [Instances](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_instance)
-* [Public Gateway](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_public_gateway)
-* [VPN Gateway](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpn_gateway)
-* [VPN Gateway Connection](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpn_gateway_connection)
-* [Volumes](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_volume)
-* [Load Balancer](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb)
-* [Load Balancer Listener](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener)
-* [Load Balancer Pool](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool)
-* [Load Balancer Pool Member](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool_member)
+| Name | Version |
+|------|---------|
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >= 1.36.0 |
+| <a name="requirement_template"></a> [template](#requirement\_template) | 2.2.0 |
 
-## Terraform versions
+## Providers
 
-## Usage
+| Name | Version |
+|------|---------|
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | >= 1.36.0 |
+| <a name="provider_template"></a> [template](#provider\_template) | 2.2.0 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [ibm_is_floating_ip.floating-ips](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_floating_ip) | resource |
+| [ibm_is_instance.server-instances](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_instance) | resource |
+| [ibm_is_lb.lbs](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb) | resource |
+| [ibm_is_lb_listener.lb_listener](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener) | resource |
+| [ibm_is_lb_listener_policy.lb_listener_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener_policy) | resource |
+| [ibm_is_lb_pool.lb_pools](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool) | resource |
+| [ibm_is_lb_pool_member.lb_members](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool_member) | resource |
+| [ibm_is_network_acl.acls](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_network_acl) | resource |
+| [ibm_is_public_gateway.public_gateway](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_public_gateway) | resource |
+| [ibm_is_security_group.vpc_sg](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_security_group) | resource |
+| [ibm_is_security_group_rule.sg_rules](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_security_group_rule) | resource |
+| [ibm_is_ssh_key.sshkeys_to_upload](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_ssh_key) | resource |
+| [ibm_is_subnet.subnets](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_subnet) | resource |
+| [ibm_is_virtual_endpoint_gateway.endpoint_gateways](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_virtual_endpoint_gateway) | resource |
+| [ibm_is_volume.volumes](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_volume) | resource |
+| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc) | resource |
+| [ibm_is_vpc_address_prefix.address_prefixes](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc_address_prefix) | resource |
+| [ibm_is_vpc_route.route](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpc_route) | resource |
+| [ibm_is_vpn_gateway.vpn_gw](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpn_gateway) | resource |
+| [ibm_is_vpn_gateway_connection.vpn_gateway_connection](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_vpn_gateway_connection) | resource |
+| [ibm_is_ssh_key.sshkey](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/is_ssh_key) | data source |
+| [template_cloudinit_config.cloud-init](https://registry.terraform.io/providers/hashicorp/template/2.2.0/docs/data-sources/cloudinit_config) | data source |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_acls"></a> [acls](#input\_acls) | Access Control List that establish inbound/outbound rules on the subnet | `map` | `{}` | no |
+| <a name="input_address_prefixes"></a> [address\_prefixes](#input\_address\_prefixes) | IP range that will be defined for the VPC for a certain location | `map` | `{}` | no |
+| <a name="input_classic_access"></a> [classic\_access](#input\_classic\_access) | Classic Access to the VPC | `bool` | `null` | no |
+| <a name="input_cloud_init_data"></a> [cloud\_init\_data](#input\_cloud\_init\_data) | Optional user data that automatically performs common configuration tasks or runs scripts | `map` | `{}` | no |
+| <a name="input_default_address_prefix"></a> [default\_address\_prefix](#input\_default\_address\_prefix) | Default address prefix creation method | `string` | `null` | no |
+| <a name="input_default_network_acl_name"></a> [default\_network\_acl\_name](#input\_default\_network\_acl\_name) | Name of the Default ACL | `string` | `null` | no |
+| <a name="input_default_routing_table_name"></a> [default\_routing\_table\_name](#input\_default\_routing\_table\_name) | Name of the Default Routing Table | `string` | `null` | no |
+| <a name="input_default_security_group_name"></a> [default\_security\_group\_name](#input\_default\_security\_group\_name) | Name of the Default Security Group | `string` | `null` | no |
+| <a name="input_encryption_key_crn"></a> [encryption\_key\_crn](#input\_encryption\_key\_crn) | kms key crn | `string` | `null` | no |
+| <a name="input_endpoint_gateways"></a> [endpoint\_gateways](#input\_endpoint\_gateways) | Map defining the information needed to create a virtual endpoint gateway | `map` | `{}` | no |
+| <a name="input_floating_ips"></a> [floating\_ips](#input\_floating\_ips) | A list of server names that you wish to define a floating IP to which will allow access to it from the public Internet | `list` | `[]` | no |
+| <a name="input_loadbalancers"></a> [loadbalancers](#input\_loadbalancers) | Map defining the information needed to create one or more loadbalancer service | `map` | `{}` | no |
+| <a name="input_prefix"></a> [prefix](#input\_prefix) | The prefix that you would like to append to your resources | `string` | `null` | no |
+| <a name="input_public_gateway"></a> [public\_gateway](#input\_public\_gateway) | Allow all attached resources to communicate with the public Internet | `list` | `[]` | no |
+| <a name="input_region"></a> [region](#input\_region) | The region to which to deploy the VPC | `string` | n/a | yes |
+| <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | The resource group ID where the VPC to be created | `string` | n/a | yes |
+| <a name="input_routes"></a> [routes](#input\_routes) | Allows you to specify the next hop for packets based on their destination address | `map` | `{}` | no |
+| <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | Network rules that establish filtering to each network interface of a virtual server instance | `any` | `{}` | no |
+| <a name="input_servers"></a> [servers](#input\_servers) | A list of server that you wish to define within your VPC | `list` | `[]` | no |
+| <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | A list of SSH keys that will be utilized by the instances | `list` | `[]` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | IP range in CIDR notation from the address prefix | `map` | `{}` | no |
+| <a name="input_vpc_name"></a> [vpc\_name](#input\_vpc\_name) | The resource group ID where the VPC to be created | `string` | n/a | yes |
+| <a name="input_vpc_tags"></a> [vpc\_tags](#input\_vpc\_tags) | List of Tags for the vpc | `list(string)` | `[]` | no |
+| <a name="input_vpn_gateway"></a> [vpn\_gateway](#input\_vpn\_gateway) | Map defining the information needed to create a VPN service to securely connect your VPC to another private network | `map` | `{}` | no |
+
+## Example Usage
 
 ```hcl
 module "vpc" {
@@ -103,31 +152,11 @@ module "vpc" {
 }
 ```
 
-## Examples
-
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
-| vpc_name  | The name of the VPC | `string` | `""` | no |
-| resource_group  | The resource group where the VPC is to be created  | `string` | `""` | no |
-| security_group_rules  | A map of the security group rules to be defined for VPC  | `map(string)` | `{}` | no |
-| acls | A map of the acl rules to be defined for VPC  | `map(string)` | `{}` | no |
-| address_prefixes  | IP range that will be defined for the VPC  | `map(string)` | `{}` | no |
-| subnets  | IP range in CIDR notation from the address prefix  | `map(string)` | `{}` | no |
-| public_gateway  | Allow all attached resources to communicate with the public Internet  | `list(string)` | `[]` | no |
-| ssh_keys  | List of maps of SSH keys to apply to the vpc instances  | `list` | `[]` | no |
-| cloud_init_data  | Optional user data that automatically performs common configuration tasks or runs scripts  | `map(string)` | `{}` | no |
-| servers  | A list of server that you wish to define within your VPC  | `list(map(string))` | `[]` | no |
-| floating_ips  | A list of server names that you wish to define a floating IP to which will allow access to it from the public Internet  | `list(string)` | `[]` | no |
-| vpn_gateway  | Map defining the information needed to create a VPN service to securely connect your VPC to another private network  | `map(string)` | `[]` | no |
-| loadbalancers  | A map to create load balancers  | `map` | `{}` | no |
-
-### Variable structures
+## Variable structures
 
 Some of the above resources, have a complex map structure.  Below goes through each with the description of each component
 
-#### ssh_keys
+### ssh_keys
 ```hcl
 ssh_keys = [
   {
@@ -146,7 +175,7 @@ Argument Reference:
 * public_key: (Optional) Contents of the public ssh key
 * tags: (Optional) String of tags with each separated by a comma
 
-#### address_prefixes
+### address_prefixes
 
 ```hcl
 address_prefixes = {
@@ -162,7 +191,7 @@ Argument Reference:
   * zone_name: The name of the zone
   * cidr: The CIDR block for the address
 
-#### security_group_rules
+### security_group_rules
 
 ```hcl
 security_group_rules = {
@@ -198,7 +227,7 @@ Argument Reference:
     * port_min: The inclusive lower bound of UDP port range. Valid values are from 1 to 65535
     * port_max: The inclusive upper bound of UDP port range. Valid values are from 1 to 65535
 
-#### acls
+### acls
 
 ```hcl
 acls = {
@@ -251,12 +280,13 @@ Argument Reference:
       * source_port_max: The highest port in the range of ports to be matched; if unspecified, 65535 is used.
       * source_port_min:  The lowest port in the range of ports to be matched; if unspecified, 1 is used
 
-#### subnets
+### subnets
 ```hcl
 subnets = {
     <name> = {
-      zone = "us-south-1"
+      zone_number = "1"
       cidr_block = "172.21.0.0/24"
+      network_acl = "<ACL NAME>
       public_gateway = "us-south-1"
     }
   }
@@ -264,12 +294,13 @@ subnets = {
 
 Argument Reference:
 * \<name\>: Name that you want to define use for this subnet
-  * zone: The subnet zone name
+  * zone_number: The subnet zone number (1, 2, 3)
   * cidr_block: The ipv4 range of the subnet
+  * network_acl: Name of an ACL that you would like to attach to this subnet
   * public_gateway: The name of the public gateway you want to assign to this subnet
 
 
-#### public_gateway
+### public_gateway
 ```hcl
 public_gateway = ["us-south-1"]
 ```
@@ -277,7 +308,7 @@ public_gateway = ["us-south-1"]
 Argument Reference:
 * \<name\>: The name that you want to define for the public gateway.  Value gateway zone name
 
-#### servers
+### servers
 
 ```hcl
 servers = [
@@ -314,7 +345,7 @@ Argument Reference:
   * zone - The location of the volume
 * user_data: Name of the cloud-init user data
 
-#### vpn_gateway
+### vpn_gateway
 
 ```hcl
 vpn_gateway = {
@@ -343,7 +374,7 @@ Argument Reference:
       * peer_cidrs: List of CIDRs
       * admin_state_up: VPN gateway connection status
 
-#### loadbalancers
+### loadbalancers
 
 ```hcl
 loadbalancers = {
@@ -444,3 +475,10 @@ Argument Reference:
 
 
 ## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_subnets"></a> [subnets](#output\_subnets) | n/a |
+| <a name="output_vpc"></a> [vpc](#output\_vpc) | n/a |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
+| <a name="output_vpn_gw_ip"></a> [vpn\_gw\_ip](#output\_vpn\_gw\_ip) | VPN Public IP Address |
