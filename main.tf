@@ -512,7 +512,7 @@ resource "ibm_is_virtual_endpoint_gateway" "endpoint_gateways" {
     for_each = toset(lookup(each.value, "subnets", []))
     content {
       subnet   =  ibm_is_subnet.subnets[ips.key].id
-      name     = "${each.key}-${ips.key}-ip"
+      name     = (var.prefix != null ? "${var.prefix}-${each.key}-${ips.key}-ip" : "${each.key}-${ips.key}-ip")
     }
   }
   vpc = ibm_is_vpc.vpc.id
