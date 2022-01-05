@@ -98,6 +98,7 @@ resource "ibm_is_network_acl" "acls" {
 
   name      = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
   vpc       = ibm_is_vpc.vpc.id
+  resource_group = var.resource_group_id
   dynamic "rules" {
     for_each = each.value["rules"]
     content {
