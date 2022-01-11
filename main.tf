@@ -223,7 +223,11 @@ locals {
        sshkey.name => {public_key: sshkey.public_key, resource_group: lookup(sshkey, "resource_group", ""), tags: lookup(sshkey, "tags", [])}
        if lookup(sshkey,"public_key", "") != ""
    }
-   ssh_keys = [ for sshkey in var.ssh_keys : sshkey.name ]
+ 
+   ssh_keys = {
+     for sshkey in  var.ssh_keys :
+      sshkey.name => { name:  ((lookup(sshkey, "public_key", "") == "" || var.prefix == null) ? sshkey.name : "${var.prefix}-${sshkey.name}") }
+   }
 }
 
 resource "ibm_is_ssh_key" "sshkeys_to_upload" {
@@ -235,8 +239,8 @@ resource "ibm_is_ssh_key" "sshkeys_to_upload" {
 }
 
 data "ibm_is_ssh_key" "sshkey" {
-  for_each = toset(local.ssh_keys)
-  name = (var.prefix != null ? "${var.prefix}-${each.key}" : each.key)
+  for_each = local.ssh_keys
+  name = each.value.name
 
   depends_on = [ibm_is_ssh_key.sshkeys_to_upload]
 }
