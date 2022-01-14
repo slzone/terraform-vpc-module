@@ -281,7 +281,7 @@ resource "ibm_is_instance" "server-instances" {
   zone      = ibm_is_subnet.subnets[each.value["subnet"]].zone
   profile   = each.value["profile"]
   #image     = data.ibm_is_images.images.images[index(data.ibm_is_images.images.images.*.name, each.value.image)].id
-  image     = each.value.image_id
+  image     = lookup(each.value, "image_id", "") == "" ? var.default_image_id : each.value.image_id
   vpc       = ibm_is_vpc.vpc.id
   keys      = [for key in lookup(each.value, "ssh_key_list", []) : data.ibm_is_ssh_key.sshkey[key].id]
   volumes   = [for v in lookup(each.value, "volumes", []) : ibm_is_volume.volumes["${v.prefix}-${each.value["serverIndex"]}"].id]

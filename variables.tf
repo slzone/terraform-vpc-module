@@ -109,6 +109,12 @@ variable "encryption_key_crn" {
   default = null
 }
 
+variable "default_image_id" {
+  description = "The default image that will be used for a VSI if none is defined"
+  type        = string
+  default     = ""
+}
+
 variable "servers" {
   description = "A list of server that you wish to define within your VPC"
   type = list
