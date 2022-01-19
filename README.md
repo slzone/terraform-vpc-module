@@ -342,6 +342,7 @@ Argument Reference:
 * volumes: A list of maps for volumes to create for instance
   * prefix - the prefix name for the volume
   * profile - the profile name to use for this volume
+  * capacity - the capacity of the volume
   * zone - The location of the volume
 * user_data: Name of the cloud-init user data
 

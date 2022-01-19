@@ -192,7 +192,7 @@ resource "ibm_is_vpc_route" "route" {
 locals {
   serverList = flatten([
     for server in var.servers : [
-      for i in range(server["count"]) : merge({serverIndex = i}, server)
+      for i in (lookup(server, "count", null) != null ? range(server["count"]) : range(var.default_vsi_count)) : merge({serverIndex = i}, server)
     ]
   ])
   serverMap = {
@@ -201,7 +201,7 @@ locals {
   }
   volumeList = flatten([
     for server in var.servers: [
-      for serverIndex in range(server.count): [
+      for serverIndex in (lookup(server, "count", null) != null ? range(server["count"]) : range(var.default_vsi_count)): [
         for volume in lookup(server, "volumes", []): [
           merge({name: "${volume["prefix"]}-${serverIndex}"}, volume)
         ]

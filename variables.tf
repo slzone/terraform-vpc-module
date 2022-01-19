@@ -115,6 +115,12 @@ variable "default_image_id" {
   default     = ""
 }
 
+variable "default_vsi_count" {
+  description = "The default count of VSI's that will be provisioned if a count is not specified"
+  type        = number
+  default     = null
+}
+
 variable "servers" {
   description = "A list of server that you wish to define within your VPC"
   type = list
